@@ -54,6 +54,7 @@
         scrollable
       >
         <InputDialog 
+          v-bind:header="this.headers"
           @click-close="dialog = $event"
           @click-add="addData($event)"
         />
@@ -73,8 +74,9 @@ import InputDialog from "./InputDialog.vue";
 
 // // const file = path.join(__dirname, "data/tododata.nedb").replace("app.asar", "app.asar.unpacked")
 const tododb = new Database({
-    filename: `C:/Users/ea0710055/PGM/taskpicker/taskqiwi/src/components/db/testdata.db`
+    // filename: `C:/Users/ea0710055/PGM/taskpicker/taskqiwi/src/components/db/testdata.db`
     // filename: path.join(remote.app.getPath("userData"), "data.db")
+    filename: `/home/yuji01k/codes/taskqiwi/taskqiwi/src/components/db/testdata.db`
     , autoload: true
     });
 // // tododb.loadDatabase(function(err){ if(err){console.log(err)}})

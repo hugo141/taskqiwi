@@ -17,9 +17,9 @@
             </v-btn>
         </v-toolbar>
         <v-card-text>
-            <v-text-field
+            <!-- <v-text-field
                 label="タスク名"
-                :rules="rules"
+                :rules="require"
                 hide-details="auto"
                 clearable
                 v-model = title
@@ -29,7 +29,55 @@
                 hide-details="auto"
                 clearable
                 v-model = memo
-            ></v-textarea>
+            ></v-textarea> -->
+            <template v-for="item in header">
+                <template v-if="item.input !== 'n'">
+                    <v-text-field
+                        v-if="item.input == 'text'"
+                        clearable
+                        :key="item.value"
+                        label="item.text"
+                    ></v-text-field>
+                    <v-text-field
+                        v-if="item.input == 'textreq'"
+                        clearable
+                        :key="item.value"
+                        :rules="req"
+                        :label="item.text"
+                    ></v-text-field>
+                    <v-textarea
+                        v-if="item.input == 'textarea'"
+                        clearable
+                        :key="item.value"
+                        :label="item.text"
+                    ></v-textarea>
+                    <!-- <v-date-picker
+                        v-if="item.input == 'date'"
+                        clearable
+                        :key="item.value"
+                        :label="item.text"
+                    ></v-date-picker> -->
+                    <v-menu 
+                        v-if="item.input == 'date'"
+                        v-model="menu"
+                        :key="item.value"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-text-field 
+                                v-model="text" 
+                                v-bind="attrs" 
+                                v-on="on" 
+                                readonly 
+                                clearable 
+                                :label="item.text"
+                                :key="item.value + 'date'">
+                            </v-text-field>
+                        </template>
+                        <v-date-picker v-model="picker" @input="formatDate(picker)">
+                        </v-date-picker>
+                    </v-menu>
+                </template>
+            </template>
             <v-list 
                 v-if="error.length"
                 dense
@@ -61,16 +109,21 @@
 <script>
     export default {
         name: "InputDialog",
+        props:{
+            header:Array,
+        },
         data: () => ({
-            rules: [
+            req: [
                 value => !!value || "Required.",
             ],
-            title: "",
-            memo: "",
-            error: []
+            error: [],
+            menu: "",
+            text: "",
+            picker: "",
         }),
         methods: {
             clickClose() {
+                console.log(this.header)
                this.$emit("click-close", false);
             },
             clickAdd() {
@@ -78,14 +131,20 @@
                     this.error = []
                     this.error.push("タスク名は必ず入力してください。")
                 } else {
-                    let ar = [this.title, this.memo]
-                    this.title = ""
-                    this.memo = ""
+                    // let ar = [this.title, this.memo]
+                    let ar = []
                     this.error = []
                     this.$emit("click-add", ar)
                     this.clickClose()
                 }
-            }
+            },
+            formatDate(date) {
+                if (!date) return null;
+                    const [year, month, day] = date.split("-");
+                    this.text = `${year}/${month}/${day}`;
+                    this.menu = false;
+                return;
+            },
         }
     }
 </script>

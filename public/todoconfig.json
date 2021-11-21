@@ -1,35 +1,17 @@
 {
     "headers":[
-        {"text":"ID","value":"_id", "width":"8%","sortable": "false", "tasklist":false}
-        ,{"text":"No","value":"no", "width":"8%","sortable": "true", "tasklist":true}
-        ,{"text":"Task Name","value":"taskname","width":"20%","sortable": "false", "tasklist":true}
-        ,{"text":"Status","value":"status","width":"10%","sortable": "true", "tasklist":true}
-        ,{"text":"Limit","value":"limit","width":"20%","sortable": "false", "tasklist":true}
-        ,{"text":"Memo","value":"detail","width":"30%","sortable": "false", "tasklist":true}
-        ,{"text":"del","value":"del","width":"10%","sortable": "false", "tasklist":false}
-        ,{"text":"laseupdate","value":"laseupdate","width":"10%","sortable": "false", "tasklist":false}
+        {"text":"ID","value":"_id", "width":"8%","sortable": "false", "tasklist":false, "input":"n"}
+        ,{"text":"No","value":"no", "width":"8%","sortable": "true", "tasklist":true, "input":"n"}
+        ,{"text":"Task Name","value":"taskname","width":"20%","sortable": "false", "tasklist":true, "input":"textreq"}
+        ,{"text":"Status","value":"status","width":"10%","sortable": "true", "tasklist":true, "input":"n"}
+        ,{"text":"Limit","value":"limit","width":"20%","sortable": "false", "tasklist":true, "input":"date"}
+        ,{"text":"Memo","value":"detail","width":"30%","sortable": "false", "tasklist":true, "input":"textarea"}
+        ,{"text":"del","value":"del","width":"10%","sortable": "false", "tasklist":false, "input":"n"}
+        ,{"text":"laseupdate","value":"laseupdate","width":"10%","sortable": "false", "tasklist":false, "input":"n"}
     ],
     "states":[
         {"id":"0", "label":"未着", "btn":"開始"}
         ,{"id":"1", "label":"開始", "btn":"終了"}
         ,{"id":"2", "label":"終了", "btn":"完了"}
-    ],
-    "items": [
-        {
-            "no":"1"
-            ,"taskname":"タスク追加機能作成"
-            ,"detail":"todo一覧からタスクを追加する機能系を作る"
-            ,"status":"0"
-            ,"user":"710055"
-            ,"updatedate":"2019/12/01"
-        }
-        ,{
-            "no":"2"
-            ,"taskname":"タスク検索機能"
-            ,"detail":"他ユーザーも含めタスクを検索し閲覧する機能系を作る。\nPMがタスクを確認することが目的。"
-            ,"status":"0"
-            ,"user":"710056"
-            ,"updatedate":"2019/12/03"
-        }
     ]
 }
