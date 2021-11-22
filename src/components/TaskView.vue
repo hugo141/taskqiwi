@@ -54,7 +54,7 @@
         scrollable
       >
         <InputDialog 
-          v-bind:header="this.headers"
+          v-bind:data="this.newCreation()"
           @click-close="dialog = $event"
           @click-add="addData($event)"
         />
@@ -90,6 +90,7 @@ export default {
     items: null,
     statuses: null,
     headers: null,
+    creation: null,
     dialog: false,
   }),
   components:{
@@ -148,7 +149,7 @@ export default {
     createHeadArray(){
       let headar = []
       this.headers.forEach(async function(item){
-        headar.push(item.value)  
+        headar.push(item.id)  
       })
       return headar
     },
@@ -179,7 +180,24 @@ export default {
         this.items = doc;
       })
     },
+    newCreation(){
+      let ar = []
+      this.headers.forEach(async function(item){
+        if(item.inputtype !== "n"){
+          let str = {}
+          str["id"]=item.id
+          str["text"]=item.text
+          str["inputtype"]=item.inputtype
+          str["value"]=""
 
+          ar.push(str)
+        }
+      })
+      console.log(ar)
+      // this.creation = ar
+      
+      return ar
+    },
   },
   mounted: function () {
     Axios.get("../todoconfig.json").then(
