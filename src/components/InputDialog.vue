@@ -20,45 +20,44 @@
             <v-form>
                 <ValidationObserver ref="observer" v-slot="{ invalid }" immediate>
                 <template v-for="(item, index) in data">
-
+                    <v-text-field
+                        v-if="item.inputtype == 'text'"
+                        clearable
+                        :key="item.id"
+                        :label="item.text"
+                        v-model="data[index].value"
+                    ></v-text-field>
+                    <ValidationProvider 
+                        v-if="item.inputtype == 'textreq'"
+                        :key="item.id+'require'"
+                        :name="item.text"
+                        v-slot="{ errors, valid, validate }" 
+                        rules="required"
+                    >
                         <v-text-field
-                            v-if="item.inputtype == 'text'"
-                            clearable
                             :key="item.id"
+                            clearable
+                            require
                             :label="item.text"
+                            :error-messages="errors"
+                            :success="valid"
+                            @change="validate"
                             v-model="data[index].value"
                         ></v-text-field>
-                        <ValidationProvider 
-                            v-if="item.inputtype == 'textreq'"
-                            :key="item.id+'require'"
-                            :name="item.text"
-                            v-slot="{ errors, valid, validate }" 
-                            rules="required"
-                        >
-                            <v-text-field
-                                :key="item.id"
-                                clearable
-                                require
-                                :label="item.text"
-                                :error-messages="errors"
-                                :success="valid"
-                                @change="validate"
-                                v-model="data[index].value"
-                            ></v-text-field>
-                        </ValidationProvider>                       
-                        <v-textarea
-                            v-if="item.inputtype == 'textarea'"
-                            clearable
-                            :key="item.id"
-                            :label="item.text"
-                            v-model="data[index].value"
-                        ></v-textarea>
-                        <DateInput 
-                            v-if="item.inputtype == 'date'"
-                            :key="item.id"
-                            :itemname="item.id"
-                            v-model="data[index].value"                        
-                        ></DateInput>
+                    </ValidationProvider>                       
+                    <v-textarea
+                        v-if="item.inputtype == 'textarea'"
+                        clearable
+                        :key="item.id"
+                        :label="item.text"
+                        v-model="data[index].value"
+                    ></v-textarea>
+                    <DateInput 
+                        v-if="item.inputtype == 'date'"
+                        :key="item.id"
+                        :itemname="item.id"
+                        v-model="data[index].value"                        
+                    ></DateInput>
                 </template>
                 <div class="text-right">
                 <v-btn
@@ -87,7 +86,6 @@ localize('ja', ja)
 export default {
     name: "InputDialog",
     props:{
-        // header:Array,
         data:Array,
     },
     components: {
@@ -100,25 +98,16 @@ export default {
     }),
     methods: {
         clickClose() {
-            console.log(this.data)
+            // console.log(this.data)
             this.$emit("click-close", false);
         },
         clickAdd() {
-            // let ar = []
-            // this.error = []
-            // this.$emit("click-add", ar)
-            // this.clickClose()
-            // console.log(this.header["taskname"].output)
             this.$refs.observer.validate().then(result => {
-                
-                this.createData()
-                console.log('submit', result)
+                // console.log(this.data)
+                // console.log('submit', result)
+                this.$emit("click-add", this.data)
+                this.clickClose()
             })
-        },
-        createData(){
-            // this.data.forEach(async function(item){
-                // console.log(this.$refs[item.id].internalValue)
-            // })
         },
     }
 }

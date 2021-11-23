@@ -14,7 +14,7 @@
         </v-text-field>
       </v-card-title>
     </v-card>
-    <template v-if="items == null">
+    <template v-if="items == null || items.length == 0">
       <v-card>
         <v-card-title>タスクがありません。</v-card-title>
       </v-card>
@@ -80,7 +80,8 @@ const tododb = new Database({
     , autoload: true
     });
 // // tododb.loadDatabase(function(err){ if(err){console.log(err)}})
-// tododb.remove()
+// tododb.remove();
+// tododb.loadDatabase()
 // // tododb.insert(dbData);
 
 export default {
@@ -106,16 +107,23 @@ export default {
       this.dataUpdate(item)
     },
     async addData(ar){
+      // console.log("ar")
       let count = 0
       count = await this.dataCount()
-      let item = {
-        no: count + 1
-        ,taskname: ar[0]
-        ,status:0
-        ,detail: ar[1]
-      };
-      await this.dataInsert(item)
+      let setInsDoc = {}
+      setInsDoc["no"]=count + 1
+      this.headers.forEach(async function(item){
+        if(item.id !== "_id"){
+          setInsDoc[item.id]=item.default
+        }
+      })
+      ar.forEach(async function(row){
+        setInsDoc[row.id]=row.value
+      })
+      await this.dataInsert(setInsDoc)
       await this.dataLoad()
+      // console.log("setInsDoc")
+      // console.log(setInsDoc)
     },
     dataUpdate(data) {
       let query = this.createUpdateQuery(data._id, data)
@@ -178,6 +186,7 @@ export default {
     async dataLoad(){
       tododb.find({} , (err, doc) => {
         this.items = doc;
+        console.log(this.items)
       })
     },
     newCreation(){
@@ -193,9 +202,6 @@ export default {
           ar.push(str)
         }
       })
-      console.log(ar)
-      // this.creation = ar
-      
       return ar
     },
   },
@@ -208,10 +214,9 @@ export default {
         this.statuses = array.states
       }.bind(this)
     );
-    // console.log(tododb)
     tododb.find({} , (err, doc) => {
+        // console.log(doc)
         this.items = doc;
-        console.log(this.items)
     })
   },
   computed: {

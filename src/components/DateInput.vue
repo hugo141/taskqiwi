@@ -4,7 +4,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-text-field 
-                v-model="text" 
+                v-model="text"
                 v-bind="attrs" 
                 v-on="on" 
                 readonly 
@@ -23,6 +23,9 @@ export default {
     name: "DateInput",
     props:{
         itemname:String,
+        value: {
+            type:String
+        }
     },
     data: () => ({
         menu: "",
@@ -33,10 +36,21 @@ export default {
         formatDate(date) {
             if (!date) return null;
                 const [year, month, day] = date.split("-");
-                this.text = `${year}/${month}/${day}`;
+                this.inputedValue = `${year}/${month}/${day}`;
                 this.menu = false;
             return;
         },
-    }
+    },
+    computed: {
+        inputedValue: {
+            get() {
+                return this.value;
+            },
+            set(newValue) {
+                this.text = newValue
+                this.$emit("input", newValue);
+            },
+        }
+    },
 }
 </script>
