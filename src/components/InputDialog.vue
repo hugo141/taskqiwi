@@ -23,40 +23,40 @@
                     <v-text-field
                         v-if="item.inputtype == 'text'"
                         clearable
-                        :key="item.id"
+                        :key="item.value"
                         :label="item.text"
-                        v-model="data[index].value"
+                        v-model="data[index].content"
                     ></v-text-field>
                     <ValidationProvider 
                         v-if="item.inputtype == 'textreq'"
-                        :key="item.id+'require'"
+                        :key="item.value+'require'"
                         :name="item.text"
                         v-slot="{ errors, valid, validate }" 
                         rules="required"
                     >
                         <v-text-field
-                            :key="item.id"
+                            :key="item.value"
                             clearable
                             require
                             :label="item.text"
                             :error-messages="errors"
                             :success="valid"
                             @change="validate"
-                            v-model="data[index].value"
+                            v-model="data[index].content"
                         ></v-text-field>
                     </ValidationProvider>                       
                     <v-textarea
                         v-if="item.inputtype == 'textarea'"
                         clearable
-                        :key="item.id"
+                        :key="item.value"
                         :label="item.text"
-                        v-model="data[index].value"
+                        v-model="data[index].content"
                     ></v-textarea>
                     <DateInput 
                         v-if="item.inputtype == 'date'"
-                        :key="item.id"
-                        :itemname="item.id"
-                        v-model="data[index].value"                        
+                        :key="item.value"
+                        :itemname="item.value"
+                        v-model="data[index].content"                        
                     ></DateInput>
                 </template>
                 <div class="text-right">
@@ -64,6 +64,7 @@
                     color="secondary"
                     width="80px"
                     :success="invalid"
+                    :disabled="invalid"
                     @click="clickAdd"
                 >
                     <v-icon>mdi-pencil-plus</v-icon>
@@ -98,13 +99,10 @@ export default {
     }),
     methods: {
         clickClose() {
-            // console.log(this.data)
             this.$emit("click-close", false);
         },
         clickAdd() {
             this.$refs.observer.validate().then(result => {
-                // console.log(this.data)
-                // console.log('submit', result)
                 this.$emit("click-add", this.data)
                 this.clickClose()
             })
