@@ -1,13 +1,13 @@
 {
     "headers":[
-        {"text":"ID","value":"_id", "width":"8%","sortable": "false", "tasklist":false, "inputtype":"n", "default":"", "sortby":0}
-        ,{"text":"No","value":"no", "width":"8%","sortable": "true", "tasklist":true, "inputtype":"n", "default":"", "sortby":4}
+        {"text":"ID","value":"_id", "width":"","sortable": "false", "tasklist":false, "inputtype":"n", "default":"", "sortby":0}
+        ,{"text":"No","value":"no", "width":"10%","sortable": "true", "tasklist":true, "inputtype":"n", "default":"", "sortby":4}
         ,{"text":"Task Name","value":"taskname","width":"20%","sortable": "false", "tasklist":true, "inputtype":"textreq", "default":"", "sortby":0}
         ,{"text":"Status","value":"status","width":"10%","sortable": "true", "tasklist":true, "inputtype":"n", "default":0, "sortby":3}
         ,{"text":"Limit","value":"limit","width":"20%","sortable": "true", "tasklist":true, "inputtype":"date", "default":"", "sortby":2}
         ,{"text":"Memo","value":"detail","width":"30%","sortable": "false", "tasklist":true, "inputtype":"textarea", "default":"", "sortby":0}
         ,{"text":"Delete","value":"del","width":"10%","sortable": "false", "tasklist":true, "inputtype":"n", "default":0, "sortby":1}
-        ,{"text":"laseupdate","value":"laseupdate","width":"10%","sortable": "false", "tasklist":false, "inputtype":"n", "default":"", "sortby":0}
+        ,{"text":"laseupdate","value":"laseupdate","width":"","sortable": "false", "tasklist":false, "inputtype":"n", "default":"", "sortby":0}
     ],
     "states":[
         {"id":"0", "label":"未着", "btn":"開始"}
