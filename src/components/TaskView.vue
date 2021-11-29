@@ -60,24 +60,26 @@
         <template #item.del="{ item }">
           <v-btn v-if="item.del == 0" color="error" @click="onClickDel(item)">削除</v-btn>            
           <v-btn v-else-if="item.del == 1" color="secondary" @click="onClickErase(item)">消去</v-btn>
-          <v-dialog v-model="deldialog">
-            <DeleteDialog 
-              v-bind:message="`このタスクを削除します。よろしいですか？`"
-              v-bind:btnMes="`削除する`"
-              @click-cancel="closeDel()"
-              @click-ok="clickDelOK()"
-            />
-          </v-dialog>
-          <v-dialog v-model="erasedialog">
-            <DeleteDialog 
-              v-bind:message="`このタスクを完全に消去します。よろしいですか？`"
-              v-bind:btnMes="`消去する`"
-              @click-cancel="closeErase()"
-              @click-ok="clickEraseOK()"
-            />
-          </v-dialog>
         </template>
       </v-data-table>
+      <template>
+        <v-dialog v-model="deldialog">
+          <DeleteDialog 
+            v-bind:message="`このタスクを削除します。よろしいですか？`"
+            v-bind:btnMes="`削除する`"
+            @click-cancel="closeDel()"
+            @click-ok="clickDelOK()"
+          />
+        </v-dialog>
+        <v-dialog v-model="erasedialog">
+          <DeleteDialog 
+            v-bind:message="`このタスクを完全に消去します。よろしいですか？`"
+            v-bind:btnMes="`消去する`"
+            @click-cancel="closeErase()"
+            @click-ok="clickEraseOK()"
+          />
+        </v-dialog>
+      </template> 
     </template>
     <v-btn
       fab

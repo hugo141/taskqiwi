@@ -107,6 +107,6 @@ export default {
                 this.clickClose()
             })
         },
-    }
+    },
 }
 </script>
