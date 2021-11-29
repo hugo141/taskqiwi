@@ -20,16 +20,9 @@
           </v-row>
           <v-row>
             <v-spacer></v-spacer>
-            <!-- <v-switch
-              v-model="showfinflg"
-              label="完了済みを表示"
-              color="info"
-              hide-details
-              @click="onClickShowFin()"
-            ></v-switch> -->
             <v-switch
               v-model="showdelflg"
-              label="削除済みを表示"
+              label="完了、削除済みを表示"
               color="info"
               hide-details
               @click="onClickShowdel()"
@@ -65,26 +58,24 @@
         </template>
 
         <template #item.del="{ item }">
-          <v-btn v-if="item.del == 0" color="error" @click="deldialog = true">削除</v-btn>
-          <v-btn v-else-if="item.del == 1" color="secondary" @click="erasedialog = true">消去</v-btn>
-
+          <v-btn v-if="item.del == 0" color="error" @click="onClickDel(item)">削除</v-btn>            
+          <v-btn v-else-if="item.del == 1" color="secondary" @click="onClickErase(item)">消去</v-btn>
           <v-dialog v-model="deldialog">
             <DeleteDialog 
               v-bind:message="`このタスクを削除します。よろしいですか？`"
               v-bind:btnMes="`削除する`"
-              @click-cancel="deldialog = $event"
-              @click-ok="clickDelOK(item)"
+              @click-cancel="closeDel()"
+              @click-ok="clickDelOK()"
             />
           </v-dialog>
           <v-dialog v-model="erasedialog">
             <DeleteDialog 
               v-bind:message="`このタスクを完全に消去します。よろしいですか？`"
               v-bind:btnMes="`消去する`"
-              @click-cancel="erasedialog = $event"
-              @click-ok="clickEraseOK(item)"
+              @click-cancel="closeErase()"
+              @click-ok="clickEraseOK()"
             />
           </v-dialog>
-
         </template>
       </v-data-table>
     </template>
@@ -122,10 +113,9 @@ export default {
   name: "TaskView",
   data: () => ({
     search: "",
-    // showfinflg:false,
-    // showfin: {status: {$lt:2} },
     showdelflg: false,
     showdel: { del:0 },
+    delitem: null,
     items: null,
     statuses: null,
     sortby: null,
@@ -140,17 +130,7 @@ export default {
     DeleteDialog,
   },
   methods: {
-    // onClickShowFin(){
-    //   let cond = {}
-    //   if (this.showfinflg){
-    //     cond["status"] = {$lte: 2}
-    //     this.showfin = cond
-    //   } else {
-    //     cond["status"] = {$lt: 2}
-    //     this.showfin = cond
-    //   }
-    //   this.dataLoad()
-    // },
+    // Button Action
     onClickShowdel(){
       let cond = {}
       if (this.showdelflg){
@@ -171,15 +151,35 @@ export default {
       item.del = 1;
       this.doUpdate(item)
     },
-    clickDelOK(item) {
-      item.del = 1;
-      this.doUpdate(item)
+    onClickDel(item){
+      this.delitem = item
+      this.deldialog = true
+    },
+    closeDel(){
+      this.delitem = null
       this.deldialog = false
     },
-    clickEraseOK(item) {
-      this.doErase(item)
+    clickDelOK() {
+      this.delitem.del = 1;
+      this.doUpdate(this.delitem)
+      this.deldialog = false
+      this.delitem = null
+    },
+    onClickErase(item){
+      this.delitem = item
+      this.erasedialog = true
+    },
+    closeErase(){
+      this.delitem = null
       this.erasedialog = false
     },
+    clickEraseOK() {
+      this.delitem.del = 2;
+      this.doErase(this.delitem)
+      this.erasedialog = false
+      this.delitem = null
+    },
+    // Internal Process
     async addData(ar){
       let count = []
       count = await this.dataMaxNoCount()
@@ -243,9 +243,10 @@ export default {
       })
       return ar
     },
+    // Database Access
     async dataMaxNoCount(){
       return new Promise((resolve,reject) =>
-        this.$database.find({}).sort({ no: 1 }).limit(1).exec((err, count) => {
+        this.$database.find({}).sort({ no: -1 }).limit(1).exec((err, count) => {
           if (err !== null){
             console.log("err", err);
             reject(null)
@@ -270,7 +271,7 @@ export default {
             if (err !== null){
               reject(console.log("err", err))
             }
-            resolve(console.log("numReplaced", numReplaced))
+            resolve(console.log("numReplaced", numReplaced, query))
           }       
         ) 
       })
@@ -278,7 +279,6 @@ export default {
     async dataLoad(){
       let query = {}
       query["del"] = this.showdel["del"]
-      // query["status"] = this.showfin["status"]
       this.$database.find(query, (err, doc) => {
         this.items = doc;
       })

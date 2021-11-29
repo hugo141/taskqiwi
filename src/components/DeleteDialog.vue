@@ -23,12 +23,9 @@ export default {
         message:String,
         btnMes:String,
     },
-    data: () => ({
-
-    }),
     methods: {
         clickCancel() {
-            this.$emit("click-cancel", false);
+            this.$emit("click-cancel");
         },
         clickOK() {
             this.$emit("click-ok");
