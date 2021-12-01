@@ -56,13 +56,29 @@
           <v-btn v-else-if="item.status == 1" @click="onClickEnd(item)">終了</v-btn>
           <v-btn v-else-if="item.status == 2" disabled>完了</v-btn>
         </template>
-
+        
+        <template #item.edit="{ item }">
+          <v-btn color="primary" small @click="onClickEdit(item)"><v-icon>mdi-pencil</v-icon></v-btn>
+        </template>
+          
         <template #item.del="{ item }">
-          <v-btn v-if="item.del == 0" color="error" @click="onClickDel(item)">削除</v-btn>            
-          <v-btn v-else-if="item.del == 1" color="secondary" @click="onClickErase(item)">消去</v-btn>
+          <v-btn v-if="item.del == 0" color="error" small @click="onClickDel(item)"><v-icon>mdi-delete</v-icon></v-btn>
+          <v-btn v-else-if="item.del == 1" color="secondary" small @click="onClickErase(item)"><v-icon>mdi-close-circle</v-icon></v-btn>
         </template>
       </v-data-table>
       <template>
+        <v-dialog
+          v-model="editdialog"
+          width="600px"
+          transition="dialog-bottom-transition"
+          scrollable
+        >
+          <InputDialog 
+            v-bind:data="edititem"
+            @click-close="editdialog = $event"
+            @click-ok="editData($event)"
+          />
+        </v-dialog>
         <v-dialog v-model="deldialog">
           <DeleteDialog 
             v-bind:message="`このタスクを削除します。よろしいですか？`"
@@ -87,20 +103,20 @@
       bottom
       right
       color="primary"
-      @click="dialog = true"
+      @click="onClickAdd()"
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>
     <v-dialog
-      v-model="dialog"
+      v-model="adddialog"
       width="600px"
       transition="dialog-bottom-transition"
       scrollable
     >
       <InputDialog 
-        v-bind:data="this.newCreation()"
-        @click-close="dialog = $event"
-        @click-add="addData($event)"
+        v-bind:data="creation"
+        @click-close="adddialog = $event"
+        @click-ok="addData($event)"
       />
     </v-dialog>
   </v-container>
@@ -117,15 +133,19 @@ export default {
     search: "",
     showdelflg: false,
     showdel: { del:0 },
-    delitem: null,
     items: null,
     statuses: null,
     sortby: null,
     headers: null,
+    adddialog: false,
     creation: null,
-    dialog: false,
+    editdialog:false,
+    editid: "", 
+    edititem: null,
     deldialog: false,
     erasedialog: false,
+    delitem: null,
+
   }),
   components:{
     InputDialog,
@@ -152,6 +172,10 @@ export default {
       item.status = 2;
       item.del = 1;
       this.doUpdate(item)
+    },
+    onClickEdit(item){
+      this.editCreation(item)
+      this.editdialog = true
     },
     onClickDel(item){
       this.delitem = item
@@ -181,6 +205,10 @@ export default {
       this.erasedialog = false
       this.delitem = null
     },
+      onClickAdd(){
+      this.creation = this.newCreation()
+      this.adddialog = true
+    },
     // Internal Process
     async addData(ar){
       let count = []
@@ -202,6 +230,20 @@ export default {
       })
       await this.dataInsert(setInsDoc)
       await this.dataLoad()
+      this.adddialog = false
+    },
+    async editData(data){
+      let item = this.items.find(elem => elem._id == this.editid)
+      await console.log("1",item)
+      await console.log("2",data)
+      data.forEach(async function(dr){
+        item[dr.value]=dr.content
+      })
+      await console.log("3",item)
+      await this.doUpdate(item)
+      await this.dataLoad()
+      this.editdialog = false
+
     },
     async doUpdate(data){
       let query = this.createUpdateQuery(data._id, data)
@@ -244,6 +286,24 @@ export default {
         }
       })
       return ar
+    },
+    editCreation(data){
+      this.editid = ""
+      this.edititem = null
+      let ar = []
+      this.headers.forEach(async function(item){
+        if(item.inputtype !== "n"){
+          let str = {}
+          str["value"]=item.value
+          str["text"]=item.text
+          str["inputtype"]=item.inputtype
+          str["content"]=data[item.value]
+          ar.push(str)
+        }
+      })
+      this.editid = data["_id"]
+      this.edititem = ar
+      // console.log(this.editid, this.edititem)
     },
     // Database Access
     async dataMaxNoCount(){

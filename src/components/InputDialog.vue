@@ -56,6 +56,7 @@
                         v-if="item.inputtype == 'date'"
                         :key="item.value"
                         :itemname="item.value"
+                        :datestr="data[index].content"
                         v-model="data[index].content"                        
                     ></DateInput>
                 </template>
@@ -65,7 +66,7 @@
                     width="80px"
                     :success="invalid"
                     :disabled="invalid"
-                    @click="clickAdd"
+                    @click="clickOK"
                 >
                     <v-icon>mdi-pencil-plus</v-icon>
                 </v-btn>
@@ -101,10 +102,9 @@ export default {
         clickClose() {
             this.$emit("click-close", false);
         },
-        clickAdd() {
+        clickOK() {
             this.$refs.observer.validate().then(result => {
-                this.$emit("click-add", this.data)
-                this.clickClose()
+                this.$emit("click-ok", this.data)
             })
         },
     },

@@ -4,7 +4,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-text-field 
-                v-model="text"
+                v-model="inputedValue"
                 v-bind="attrs" 
                 v-on="on" 
                 readonly 
@@ -23,14 +23,12 @@ export default {
     name: "DateInput",
     props:{
         itemname:String,
-        value: {
-            type:String
-        }
+        datestr:String,
     },
     data: () => ({
         menu: "",
-        text: "",
         picker: "",
+
     }),
     methods: {
         formatDate(date) {
@@ -44,13 +42,12 @@ export default {
     computed: {
         inputedValue: {
             get() {
-                return this.value;
+                return this.datestr
             },
             set(newValue) {
-                this.text = newValue
                 this.$emit("input", newValue);
             },
-        }
+        },
     },
 }
 </script>
