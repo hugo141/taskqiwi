@@ -10,12 +10,20 @@
           transition="scale-transition"
           width="40"
         />
-
         <h1 class="Heading-4">Task Qiwi</h1>
       </div>
 
       <v-spacer></v-spacer>
-
+      <router-link to="/">
+        <v-btn icon>
+          <v-icon>mdi-format-list-checks</v-icon>
+        </v-btn>
+      </router-link>
+      <router-link to="/FreeMemo">
+        <v-btn icon>
+          <v-icon>mdi-notebook</v-icon>
+        </v-btn>
+      </router-link>
     </v-app-bar>
 
     <v-main>

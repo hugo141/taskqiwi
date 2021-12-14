@@ -73,14 +73,14 @@
           transition="dialog-bottom-transition"
           scrollable
         >
-          <InputDialog 
+          <InputDialog
             v-bind:data="edititem"
             @click-close="editdialog = $event"
             @click-ok="editData($event)"
           />
         </v-dialog>
         <v-dialog v-model="deldialog">
-          <DeleteDialog 
+          <DeleteDialog
             v-bind:message="`このタスクを削除します。よろしいですか？`"
             v-bind:btnMes="`削除する`"
             @click-cancel="closeDel()"
@@ -88,14 +88,14 @@
           />
         </v-dialog>
         <v-dialog v-model="erasedialog">
-          <DeleteDialog 
+          <DeleteDialog
             v-bind:message="`このタスクを完全に消去します。よろしいですか？`"
             v-bind:btnMes="`消去する`"
             @click-cancel="closeErase()"
             @click-ok="clickEraseOK()"
           />
         </v-dialog>
-      </template> 
+      </template>
     </template>
     <v-btn
       fab
@@ -113,7 +113,7 @@
       transition="dialog-bottom-transition"
       scrollable
     >
-      <InputDialog 
+      <InputDialog
         v-bind:data="creation"
         @click-close="adddialog = $event"
         @click-ok="addData($event)"
@@ -134,7 +134,6 @@ export default {
     showdelflg: false,
     showdel: { del:0 },
     items: null,
-    statuses: null,
     sortby: null,
     headers: null,
     adddialog: false,
@@ -156,154 +155,150 @@ export default {
     onClickShowdel(){
       let cond = {}
       if (this.showdelflg){
-        cond["del"] = {$lte: 1}
-        this.showdel = cond
+        cond["del"] = { $lte: 1 };
+        this.showdel = cond;
       } else {
-        cond["del"]=0
-        this.showdel = cond
+        cond["del"] = 0;
+        this.showdel = cond;
       }
       this.dataLoad()
     },
     onClickStart(item) {
       item.status = 1;
-      this.doUpdate(item)
+      this.doUpdate(item);
     },
     onClickEnd(item) {
       item.status = 2;
       item.del = 1;
-      this.doUpdate(item)
+      this.doUpdate(item);
     },
     onClickEdit(item){
-      this.editCreation(item)
-      this.editdialog = true
+      this.editCreation(item);
+      this.editdialog = true;
     },
     onClickDel(item){
-      this.delitem = item
-      this.deldialog = true
+      this.delitem = item;
+      this.deldialog = true;
     },
     closeDel(){
-      this.delitem = null
-      this.deldialog = false
+      this.delitem = null;
+      this.deldialog = false;
     },
     clickDelOK() {
       this.delitem.del = 1;
-      this.doUpdate(this.delitem)
-      this.deldialog = false
-      this.delitem = null
+      this.doUpdate(this.delitem);
+      this.deldialog = false;
+      this.delitem = null;
     },
     onClickErase(item){
-      this.delitem = item
-      this.erasedialog = true
+      this.delitem = item;
+      this.erasedialog = true;
     },
     closeErase(){
-      this.delitem = null
-      this.erasedialog = false
+      this.delitem = null;
+      this.erasedialog = false;
     },
     clickEraseOK() {
       this.delitem.del = 2;
-      this.doErase(this.delitem)
-      this.erasedialog = false
-      this.delitem = null
+      this.doErase(this.delitem);
+      this.erasedialog = false;
+      this.delitem = null;
     },
       onClickAdd(){
-      this.creation = this.newCreation()
-      this.adddialog = true
+      this.creation = this.newCreation();
+      this.adddialog = true;
     },
     // Internal Process
     async addData(ar){
-      let count = []
-      count = await this.dataMaxNoCount()
+      let count = [];
+      count = await this.dataMaxNoCount();
       
-      let setInsDoc = {}
+      let setInsDoc = {};
       if(count.length == 0){
-        setInsDoc["no"]= 1
+        setInsDoc["no"]= 1;
       } else {
-        setInsDoc["no"]= parseInt(count[0].no) + 1
+        setInsDoc["no"]= parseInt(count[0].no) + 1;
       }
       this.headers.forEach(async function(item){
         if(item.value !== "_id" && item.value !== "no" ){
-          setInsDoc[item.value]=item.default
+          setInsDoc[item.value]=item.default;
         }
       })
       ar.forEach(async function(row){
-        setInsDoc[row.value]=row.content
+        setInsDoc[row.value]=row.content;
       })
-      await this.dataInsert(setInsDoc)
-      await this.dataLoad()
-      this.adddialog = false
+      await this.dataInsert(setInsDoc);
+      await this.dataLoad();
+      this.adddialog = false;
     },
     async editData(data){
-      let item = this.items.find(elem => elem._id == this.editid)
-      await console.log("1",item)
-      await console.log("2",data)
+      let item = this.items.find(elem => elem._id == this.editid);
       data.forEach(async function(dr){
-        item[dr.value]=dr.content
+        item[dr.value] = dr.content;
       })
-      await console.log("3",item)
-      await this.doUpdate(item)
-      await this.dataLoad()
-      this.editdialog = false
+      await this.doUpdate(item);
+      await this.dataLoad();
+      this.editdialog = false;
 
     },
     async doUpdate(data){
-      let query = this.createUpdateQuery(data._id, data)
-      await this.dataUpdate(data._id, query)
-      await this.dataLoad()
+      let query = this.createUpdateQuery(data._id, data);
+      await this.dataUpdate(data._id, query);
+      await this.dataLoad();
     },
     createUpdateQuery(_id, data){
       let setModifier = { $set: {} };
-      let headAr = this.createHeadArray()
+      let headAr = this.createHeadArray();
       headAr.forEach(async function(item){
         if(data[item] == undefined){
-          setModifier.$set[item]=""
+          setModifier.$set[item] = "";
         } else {
-          setModifier.$set[item]=data[item]
+          setModifier.$set[item] = data[item];
         }
       })
-      return setModifier
+      return setModifier;
     },
     createHeadArray(){
-      let headAr = []
+      let headAr = [];
       this.headers.forEach(async function(item){
-        headAr.push(item.value)  
+        headAr.push(item.value);  
       })
-      return headAr
+      return headAr;
     },
     async doErase(item){
-      await this.dataErase(item._id)
-      await this.dataLoad()
+      await this.dataErase(item._id);
+      await this.dataLoad();
     },
     newCreation(){
-      let ar = []
+      let ar = [];
       this.headers.forEach(async function(item){
         if(item.inputtype !== "n"){
-          let str = {}
-          str["value"]=item.value
-          str["text"]=item.text
-          str["inputtype"]=item.inputtype
-          str["content"]=""
-          ar.push(str)
+          let str = {};
+          str["value"] = item.value;
+          str["text"] = item.text;
+          str["inputtype"] = item.inputtype;
+          str["content"] = "";
+          ar.push(str);
         }
       })
-      return ar
+      return ar;
     },
     editCreation(data){
-      this.editid = ""
-      this.edititem = null
-      let ar = []
+      this.editid = "";
+      this.edititem = null;
+      let ar = [];
       this.headers.forEach(async function(item){
         if(item.inputtype !== "n"){
-          let str = {}
-          str["value"]=item.value
-          str["text"]=item.text
-          str["inputtype"]=item.inputtype
-          str["content"]=data[item.value]
-          ar.push(str)
+          let str = {};
+          str["value"] = item.value;
+          str["text"] = item.text;
+          str["inputtype"] = item.inputtype;
+          str["content"] = data[item.value];
+          ar.push(str);
         }
       })
-      this.editid = data["_id"]
-      this.edititem = ar
-      // console.log(this.editid, this.edititem)
+      this.editid = data["_id"];
+      this.edititem = ar;
     },
     // Database Access
     async dataMaxNoCount(){
@@ -311,9 +306,9 @@ export default {
         this.$database.find({}).sort({ no: -1 }).limit(1).exec((err, count) => {
           if (err !== null){
             console.log("err", err);
-            reject(null)
+            reject(null);
           }
-          resolve(count)
+          resolve(count);
         })
       )
     },
@@ -321,9 +316,9 @@ export default {
       return new Promise((resolve,reject) =>
         this.$database.insert(doc, (err, newItem) => {
             if (err !== null){
-              reject(console.log("err", err))
+              reject(console.log("err", err));
             }
-            resolve()
+            resolve();
         })
       )
     },
@@ -331,16 +326,16 @@ export default {
       return new Promise((resolve, reject) => {
         this.$database.update({_id:ID}, query, {multi: false}, (err, numReplaced) => {
             if (err !== null){
-              reject(console.log("err", err))
+              reject(console.log("err", err));
             }
-            resolve(console.log("numReplaced", numReplaced, query))
-          }       
-        ) 
+            resolve(console.log("numReplaced", numReplaced, query));
+          }
+        )
       })
     },
     async dataLoad(){
-      let query = {}
-      query["del"] = this.showdel["del"]
+      let query = {};
+      query["del"] = this.showdel["del"];
       this.$database.find(query, (err, doc) => {
         this.items = doc;
       })
@@ -349,27 +344,26 @@ export default {
       return new Promise((resolve, reject) => {
         this.$database.remove({_id:ID}, {multi: false}, (err, numRemoved) => {
             if (err !== null){
-              reject(console.log("err", err))
+              reject(console.log("err", err));
             }
-            resolve(console.log("numRemoved", numRemoved))
-          }       
-        ) 
+            resolve(console.log("numRemoved", numRemoved));
+          }
+        )
       })
     },
   },
   mounted: function () {
-    Axios.get("../todoconfig.json").then(
+    Axios.get("todoconfig.json").then(
       function (response) {
-        let array = response.data
-        this.headers = array.headers
-        this.statuses = array.states
+        let array = response.data;
+        this.headers = array.headers;
 
-        let sar = this.headers.filter((a) => a.sortby > 0)
-        let sar2 = [sar.length]
+        let sar = this.headers.filter((a) => a.sortby > 0);
+        let sar2 = [sar.length];
         for(let i=0;i<sar.length;i++){
-          sar2[sar[i].sortby]=sar[i].value
+          sar2[sar[i].sortby] = sar[i].value;
         }
-        this.sortby = sar2
+        this.sortby = sar2;
       }.bind(this)
     );
     this.$database.find({ del:0 , status: {$lt: 2}} , (err, doc) => {
@@ -379,8 +373,8 @@ export default {
   },
   computed: {
     shownHeaders: function () {
-      let far = this.headers.filter((a) => a.tasklist);
-      return far
+      let far = this.headers.filter((a) => a.display);
+      return far;
     },
   },
 };

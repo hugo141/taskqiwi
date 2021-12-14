@@ -10,7 +10,7 @@ module.exports = {
         win: {
           icon: "build/picker.bmp",
           target: [{
-            target: 'portable',
+            target: 'nsis',
             arch: ['x64']
           }]
         },

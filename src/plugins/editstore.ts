@@ -13,5 +13,5 @@ function getdbPath(){
 export default new Datastore({
   autoload: true,
   // filename: path.join(electron .remote.app.getPath('userData'), "tododata.db") 
-  filename: path.join(getdbPath(), "tododata.db")
+  filename: path.join(getdbPath(), "editordata.db")
 })
