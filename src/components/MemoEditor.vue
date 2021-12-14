@@ -23,9 +23,11 @@
                 <h4>Editor</h4>
                 <div id="editor">
                     <v-textarea 
+                        ref="textarea"
                         v-model="markdownText"
                         v-on:input="handleInput()"
-                        v-on:keydown.ctrl.s="doSave"
+                        v-on:keydown.prevent.tab.exact="inputTab()" 
+                        v-on:keydown.ctrl.s="doSave()"
                         outlined
                         auto-grow
                         rows=15
@@ -53,11 +55,17 @@ export default {
     data: () => ({
         _id: "",
         markdownText:"",
-        saved: false,
+        saved: true,
     }),
     methods: {
         handleInput(){
             this.saved = false
+        },
+        inputTab(){
+            const textarea = this.$refs.textarea.$refs.input
+            console.log(textarea)
+            textarea.focus()
+            document.execCommand("insertText", false, "\t")
         },
         async doExport(){
             let data = this.markdownText
